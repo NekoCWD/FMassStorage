@@ -1,0 +1,20 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="General">
+
+        <Preference
+            app:fragment="com.nekocwd.fmassstorage.settings.DirectorySettingFragment"
+            app:title="@string/image_directories"
+            app:summary="@string/configure_image_directories"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="debugEnabled"
+            android:title="@string/adb_while_hosting"
+            android:summaryOn="@string/allow_debugging_while_hosting_images"
+            android:summaryOff="@string/disallow_debugging_while_hosting_images"/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph2"
+    app:startDestination="@id/CheckingForRoot">
+
+    <fragment
+        android:id="@+id/CheckingForRoot"
+        android:name="com.nekocwd.fmassstorage.rootcheck.RootCheckFragment"
+        android:label="@string/checking_for_root"
+        tools:layout="@layout/fragment_root_check">
+
+        <action
+            android:id="@+id/action_root_checking2request"
+            app:destination="@id/RequestRoot" />
+    </fragment>
+    <fragment
+        android:id="@+id/RequestRoot"
+        android:name="com.nekocwd.fmassstorage.rootcheck.RootRequestFragment"
+        android:label="@string/request_root"
+        tools:layout="@layout/fragment_root_request">
+
+        <action
+            android:id="@+id/action_root_request2checking"
+            app:destination="@id/CheckingForRoot" />
+    </fragment>
+</navigation>
