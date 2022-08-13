@@ -108,10 +108,14 @@ class Utils {
         override fun getItemCount(): Int = dataset.size
     }
 
-    data class Image(var directory: Directory, var path: String, var label: String? = null, var image: Drawable? = null){
+    data class Image(var directory: Directory, var path: String, var cdrom: Boolean = false,
+                     var readOnly: Boolean = false, var label: String? = null,
+                     var image: Drawable? = null){
         companion object{
             const val imageIconPrefs = "image"
             const val imageLabelPrefs = "label"
+            const val imageCdromPrefs = "cdrom"
+            const val imageReadOnlyPrefs = "readonly"
 
             fun getAllFromDirectory(directory: Directory, mContext: Context): ArrayList<Image>{
                 val process = Runtime.getRuntime().exec(arrayOf("su","-c", "ls", directory.path))
@@ -125,14 +129,41 @@ class Utils {
                     val image = Image(directory, filename)
                     image.getIcon(mContext)
                     image.getLabel(mContext)
+                    image.getCdrom(mContext)
+                    image.getReadOnly(mContext)
                     result.add(image)
                 }
                 return  result
             }
+            fun findNowHosting(mContext: Context): Image?{
+                findLunFile()?.let{ lun->
+                    val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "cat", lun))
+                    process.waitFor()
+                    val nowHostingPath = String(process.inputStream.readBytes()).split("/")
+                    if(nowHostingPath.size < 2)
+                        return null
+                    val directories = Directory.getAll(mContext)
+                    for(directory in directories){
+                        if(nowHostingPath.contains(directory.path.split("/").last())){
+                            val images = getAllFromDirectory(directory, mContext)
+                            for(image in images){
+                                if(nowHostingPath.last().trimEnd() == image.path){
+                                    return image
+                                }
+                            }
+                        }
+                    }
+                }
+                return null
+            }
         }
         fun commit(mContext: Context){
             val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
-            sp.edit().putString("$path/$imageLabelPrefs", label).apply()
+            sp.edit()
+                .putString("$path/$imageLabelPrefs", label)
+                .putBoolean("$path/$imageCdromPrefs", cdrom)
+                .putBoolean("$path/$imageReadOnlyPrefs", readOnly)
+                .apply()
         }
         fun setIcon(mContext: Context, uri: Uri){
             val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -162,6 +193,14 @@ class Utils {
                 image = drawable
             }
         }
+        private fun getCdrom(mContext: Context){
+            val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+            cdrom = sp.getBoolean("$path/$imageCdromPrefs", false)
+        }
+        private fun getReadOnly(mContext: Context){
+            val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
+            readOnly = sp.getBoolean("$path/$imageReadOnlyPrefs", false)
+        }
         fun move(mDirectory: Directory){
             if(Directory.checkDirectory(directory.path)){
                 val fullPath = "${directory.path}/$path"
@@ -169,14 +208,21 @@ class Utils {
                 process.waitFor()
             }
         }
-        fun host(mContext: Context){
-            val lun = findLunFile()
+        fun host(mContext: Context): Boolean{
+            val lun = findLunFile()!!
             val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
             val debugEnabled = sp.getBoolean("debugEnabled", false)
+            eject()
+            val cdromPath = lun.substring(0, lun.length-5).plus("cdrom")
+            Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", if(cdrom) "1" else "0", ">", cdromPath)).waitFor()
+            val readOnlyPath = lun.substring(0, lun.length-5).plus("ro")
+            Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", if(readOnly) "1" else "0", ">", readOnlyPath)).waitFor()
             var process = Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", "${directory.path}/$path", ">", lun))
             process.waitFor()
+            var exitValue = process.exitValue()
             process = Runtime.getRuntime().exec(arrayOf("su", "-c", "setprop", "sys.usb.config", if(debugEnabled)"mass_storage,adb" else "mass_storage"))
             process.waitFor()
+            return  exitValue == 0
         }
     }
     data class Directory(var path: String, var label: String, var isEnabled: Boolean, var dirId: Int?){
@@ -266,7 +312,7 @@ class Utils {
 
     companion object{
         const val isRootedPrefs = "IsRooted"
-
+        var previousUsbState = ""
         fun checkForRoot(): Boolean {
             val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "ls"))
             process.waitFor()
@@ -304,6 +350,17 @@ class Utils {
                 return if (path.length > 4)
                     path
                 else null
+            }
+        }
+        fun eject(){
+            Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", "\"\"", ">", findLunFile())).waitFor()
+            if(previousUsbState.isNotEmpty()){
+                Runtime.getRuntime().exec(arrayOf("su", "-c", "setprop", "sys.usb.config", previousUsbState)).waitFor()
+            }
+            else{
+                val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "getprop", "sys.usb.config"))
+                process.waitFor()
+                previousUsbState = String(process.inputStream.readBytes())
             }
         }
     }

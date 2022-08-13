@@ -71,7 +71,6 @@ class EditFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 binding.dirChooser.setSelection(directoryNames.indexOf(dir.label))
             }
         }
-        Log.i("Directory", directory.toString())
 
         var image: Utils.Image? = null
         directory?.let {
@@ -83,8 +82,9 @@ class EditFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
         binding.label.setText(image?.label)
         binding.image.setImageDrawable(image?.image)
+        binding.cdrom.isChecked = image?.cdrom == true
+        binding.readOnly.isChecked = image?.readOnly == true
 
-        Log.i("Image", image.toString())
         binding.addButton.setOnClickListener{
             selectedDir?.let {
                 if(binding.label.text.toString().isBlank()){
@@ -93,6 +93,8 @@ class EditFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 else {
                     image?.apply {
                         label = binding.label.text.toString()
+                        cdrom = binding.cdrom.isChecked
+                        readOnly = binding.readOnly.isChecked
                         commit(requireContext())
                         newImageUri?.let { setIcon(requireContext(), it) }
                         if(selectedDir != directory){

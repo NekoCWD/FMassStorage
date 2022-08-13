@@ -92,4 +92,7 @@
     <string name="disallow_debugging_while_hosting_images">Disallow debugging while hosting images</string>
     <string name="allow_debugging_while_hosting_images">Allow debugging while hosting images</string>
     <string name="adb_while_hosting">ADB while hosting</string>
+    <string name="hoast_as_cd_drive">Host as CD drive</string>
+    <string name="read_only">Read only</string>
+    <string name="fail_device_in_use">Failed, device is in use</string>
 </resources>

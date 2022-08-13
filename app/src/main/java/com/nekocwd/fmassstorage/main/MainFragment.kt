@@ -36,11 +36,14 @@ class MainFragment : Fragment() {
             Toast.makeText(requireContext(), R.string.cannot_find_lun_file, Toast.LENGTH_SHORT).show()
         }
         lun?.let {
-            img.image.let {binding.imageView.setImageDrawable(it)}
-            binding.imageLabel.text = img.label
-            binding.imagePath.text = "${img.directory.label}/${img.path}"
-            binding.statusContainer.visibility = View.VISIBLE
-            img.host(requireContext())
+            if(img.host(requireContext())){
+                img.image.let {binding.imageView.setImageDrawable(it)}
+                binding.imageLabel.text = img.label
+                binding.imagePath.text = "${img.directory.label}/${img.path}"
+                binding.statusContainer.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(requireContext(), R.string.fail_device_in_use, Toast.LENGTH_SHORT).show()
+            }
         }
     },
     {img ->
@@ -99,6 +102,16 @@ class MainFragment : Fragment() {
         }
         binding.createNewFab.setOnClickListener {
             findNavController().navigate(R.id.action_main2createnew)
+        }
+        binding.eject.setOnClickListener {
+            Utils.eject()
+            binding.statusContainer.visibility = View.GONE
+        }
+        Utils.Image.findNowHosting(requireContext())?.let {
+            binding.statusContainer.visibility = View.VISIBLE
+            binding.imageView.setImageDrawable(it.image)
+            binding.imageLabel.text = it.label
+            binding.imagePath.text = "${it.directory.label}/${it.path}"
         }
     }
 
