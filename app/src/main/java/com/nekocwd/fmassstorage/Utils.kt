@@ -3,25 +3,17 @@ package com.nekocwd.fmassstorage
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.DrawableContainer
 import android.graphics.drawable.PictureDrawable
-import android.graphics.drawable.VectorDrawable
 import android.net.Uri
 import android.os.Build
-import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
@@ -91,7 +83,7 @@ class Utils {
                 holder.binding.apply {
                     dirLabelText.text = dir.label
                     dirPathText.text = dir.path
-                    deleteButton.setOnClickListener{ _ ->
+                    deleteButton.setOnClickListener{
                         onDeleteClicked(dir)
                         dataset.remove(dir)
                         notifyDataSetChanged()
@@ -188,8 +180,8 @@ class Utils {
                 val ty = TypedValue()
                 mContext.theme.resolveAttribute(com.google.android.material.R.attr.colorOnBackground, ty, true)
                 val color = ty.data
-                val drawable = mContext.resources.getDrawable(R.drawable.ic_baseline_usb_24)
-                DrawableCompat.setTint(drawable, color)
+                val drawable = ResourcesCompat.getDrawable(mContext.resources, R.drawable.ic_baseline_usb_24, mContext.theme)
+                DrawableCompat.setTint(drawable!!, color)
                 image = drawable
             }
         }
@@ -219,7 +211,7 @@ class Utils {
             Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", if(readOnly) "1" else "0", ">", readOnlyPath)).waitFor()
             var process = Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", "${directory.path}/$path", ">", lun))
             process.waitFor()
-            var exitValue = process.exitValue()
+            val exitValue = process.exitValue()
             process = Runtime.getRuntime().exec(arrayOf("su", "-c", "setprop", "sys.usb.config", if(debugEnabled)"mass_storage,adb" else "mass_storage"))
             process.waitFor()
             return  exitValue == 0
@@ -305,14 +297,11 @@ class Utils {
                 .remove(directoryPath+dirId)
                 .remove(directoryEnabled+dirId).apply()
         }
-        fun checkPath(): Boolean{
-            return checkDirectory(path)
-        }
     }
 
     companion object{
         const val isRootedPrefs = "IsRooted"
-        var previousUsbState = ""
+        private var previousUsbState = ""
         fun checkForRoot(): Boolean {
             val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "ls"))
             process.waitFor()
@@ -336,18 +325,18 @@ class Utils {
             var process = Runtime.getRuntime().exec(arrayOf("su", "-c", "mount", "|grep", "configfs"))
             process.waitFor()
             val fileNames = String(process.inputStream.readBytes()).split(" ")
-            if(fileNames.size > 3){
+            return if(fileNames.size > 3){
                 process = Runtime.getRuntime().exec(arrayOf("su", "-c", "find", fileNames[2], "-type", "f", "-name", "file"))
                 process.waitFor()
                 val path = String(process.inputStream.readBytes())
-                return if(path.length > 4)
+                if(path.length > 4)
                     path
                 else null
             } else{
                 process = Runtime.getRuntime().exec(arrayOf("find", "/sys", "-type", "d", "-name", "'f_mass_storage'"))
                 process.waitFor()
                 val path = String(process.inputStream.readBytes()) + "/lun/file"
-                return if (path.length > 4)
+                if (path.length > 4)
                     path
                 else null
             }

@@ -1,19 +1,10 @@
 package com.nekocwd.fmassstorage.settings
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.nekocwd.fmassstorage.R
 import com.nekocwd.fmassstorage.Utils
 import com.nekocwd.fmassstorage.databinding.DialogAddNewDirectoryBinding
@@ -29,7 +20,7 @@ class AddDirectoryManuallyDialogFragment(val addFun:(Utils.Directory) -> Unit): 
         builder.setPositiveButton(R.string.add
         ) { _: DialogInterface, _: Int ->
             val path = binding.path.text.toString()
-            val label = binding.label.text.toString()
+            binding.label.text.toString()
             if(Utils.Directory.checkDirectory(path)){
                 addFun(
                     Utils.Directory(

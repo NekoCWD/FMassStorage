@@ -1,6 +1,5 @@
 package com.nekocwd.fmassstorage.rootcheck
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.nekocwd.fmassstorage.R
 import com.nekocwd.fmassstorage.Utils
-import com.nekocwd.fmassstorage.databinding.FragmentRootCheckBinding
 import com.nekocwd.fmassstorage.databinding.FragmentRootRequestBinding
 
 /**

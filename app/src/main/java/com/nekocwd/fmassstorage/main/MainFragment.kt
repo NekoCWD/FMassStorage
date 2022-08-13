@@ -1,23 +1,14 @@
 package com.nekocwd.fmassstorage.main
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.UiAutomation
 import android.os.Bundle
-import android.transition.Visibility
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.RotateAnimation
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.nekocwd.fmassstorage.R
 import com.nekocwd.fmassstorage.Utils
 import com.nekocwd.fmassstorage.databinding.FragmentMainBinding
@@ -60,7 +51,7 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
