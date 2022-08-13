@@ -1,6 +1,10 @@
 # FMassStorage
 Use your android device as usb mass storage
-![Screen01](https://github.com/NekoCWD/FMassStorage/blob/master/screenshots/Screenshot-01.png)
-![Screen02](https://github.com/NekoCWD/FMassStorage/blob/master/screenshots/Screenshot-02.png)
-![Screen03](https://github.com/NekoCWD/FMassStorage/blob/master/screenshots/Screenshot-03.png)
-![Screen04](https://github.com/NekoCWD/FMassStorage/blob/master/screenshots/Screenshot-04.png)
+<br>
+<img src="screenshots/01.png" height="500"/>
+<img src="screenshots/02.png" height="500"/>
+<img src="screenshots/03.png" height="500"/>
+<br>
+<img src="screenshots/04.png" height="500"/>
+<img src="screenshots/05.png" height="500"/>
+<img src="screenshots/06.png" height="500"/>
