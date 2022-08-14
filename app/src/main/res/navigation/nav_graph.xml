@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/CreateNewImageFragment"
         android:name="com.nekocwd.fmassstorage.main.EditFragment"
-        android:label="@string/create_new_image"
+        android:label="@string/edit_image"
         tools:layout="@layout/fragment_create_new_image">
         <argument
             android:name="label"

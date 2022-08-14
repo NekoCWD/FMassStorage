@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Настройки</string>
+    <string name="next">Далее</string>
+    <string name="previous">Назад</string>
+    <string name="title_activity_root_checker">Проверка суперпользователя</string>
+    <string name="checking_for_root">Проверка привилегий</string>
+    <string name="this_program_wasn_t_allowed_to_use_superuser_privileges">Данной программе не выданы привилегии суперпользователя</string>
+    <string name="request_it">Запросить их</string>
+    <string name="request_root">Запрос Root привилегий</string>
+    <string name="image_icon">Иконка</string>
+    <string name="create_new_image">Создать новый образ</string>
+    <string name="eject">Отключить</string>
+    <string name="download_image">Скачать образ</string>
+    <string name="path">Путь:</string>
+    <string name="label">Имя:</string>
+    <string name="enabled">Включено</string>
+    <string name="delete">Удалить</string>
+    <string name="add_directory_from_directory_picker">Добавить из системного диалога</string>
+    <string name="add_directory_manually">Добавить вручную</string>
+    <string name="add_directory">Добавить папку</string>
+    <string name="image_directories">Папки с образами</string>
+    <string name="configure_image_directories">Настроить папки образов</string>
+    <string name="add">Добавить</string>
+    <string name="cancel">Отмена</string>
+    <string name="settings">Настройки</string>
+    <string name="directory_not_exist">Папка не существует</string>
+    <string name="cannot_find_directory_path_add_it_manualy">Не могу найти путь к папке</string>
+    <string name="directory">Папка</string>
+    <string name="directory_wasnt_selected">Папка не выбрана</string>
+    <string name="please_define_directory_name">Укажите имя папке</string>
+    <string name="cannot_find_lun_file">Невозможно найти LUN файл</string>
+    <string name="disallow_debugging_while_hosting_images">Запретить отладку во время эмуляции</string>
+    <string name="allow_debugging_while_hosting_images">Разрешить отладку во время эмуляции</string>
+    <string name="adb_while_hosting">Отладка</string>
+    <string name="hoast_as_cd_drive">Режим CD диска</string>
+    <string name="read_only">Режим только для чтения</string>
+    <string name="fail_device_in_use">Ошибка, устройство используется</string>
+    <string name="edit_image">Редактировать образ</string>
+    <string name="save">Сохранить</string>
+</resources>

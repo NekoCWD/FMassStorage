@@ -50,6 +50,7 @@
             android:layout_height="0dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_baseline_usb_24"
+            android:contentDescription="@string/image_icon"
             app:layout_constraintBottom_toTopOf="@+id/cdrom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dirChooser" />
@@ -89,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="68dp"
-        android:text="@string/add"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
