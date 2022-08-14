@@ -1,0 +1,2 @@
+ - Updated translation
+ - Added Russian locale
