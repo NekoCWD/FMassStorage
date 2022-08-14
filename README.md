@@ -3,6 +3,6 @@
 ## Screenshots:
 
 ### Dark theme:
-<img src="screenshots/01.png" height="500"/> <img src="screenshots/02.png" height="500"/> <img src="screenshots/03.png" height="500"/>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="500"/> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" height="500"/> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" height="500"/>
 ### Light theme:
-<img src="screenshots/04.png" height="500"/> <img src="screenshots/05.png" height="500"/> <img src="screenshots/06.png" height="500"/>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" height="500"/> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.png" height="500"/> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.png" height="500"/>

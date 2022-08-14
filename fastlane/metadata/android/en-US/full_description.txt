@@ -1,0 +1,1 @@
+With this program, you can connect img, iso files, as if it were a flash drive
