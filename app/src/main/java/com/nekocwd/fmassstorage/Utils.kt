@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.caverock.androidsvg.SVG
 import com.nekocwd.fmassstorage.databinding.ItemDirectoryListBinding
 import com.nekocwd.fmassstorage.databinding.ItemImageListBinding
-
+import java.io.IOException
 
 
 class Utils {
@@ -128,7 +128,7 @@ class Utils {
                 return  result
             }
             fun findNowHosting(mContext: Context): Image?{
-                findLunFile()?.let{ lun->
+                findLunFile(mContext)?.let{ lun->
                     val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "cat", lun))
                     process.waitFor()
                     val nowHostingPath = String(process.inputStream.readBytes()).split("/")
@@ -201,10 +201,10 @@ class Utils {
             }
         }
         fun host(mContext: Context): Boolean{
-            val lun = findLunFile()!!
+            val lun = findLunFile(mContext)!!
             val sp = PreferenceManager.getDefaultSharedPreferences(mContext)
             val debugEnabled = sp.getBoolean("debugEnabled", false)
-            eject()
+            eject(mContext)
             val cdromPath = lun.substring(0, lun.length-5).plus("cdrom")
             Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", if(cdrom) "1" else "0", ">", cdromPath)).waitFor()
             val readOnlyPath = lun.substring(0, lun.length-5).plus("ro")
@@ -239,25 +239,31 @@ class Utils {
                 }
                 return dirs
             }
-            fun fromDocumentFile(file: DocumentFile, mContext: Context): Directory{
-                val dir = Directory("", file.name!!, true, null)
-                dir.commit(mContext)
-                val findMeFile = file.createFile("", "fmassstorageFindMePls.${dir.dirId}")
-                val process = Runtime.getRuntime().exec(arrayOf("su","-c","find","-L","/storage/","-name",findMeFile!!.name))
-                process.waitFor()
-                var path = String(process.inputStream.readBytes())
-                if(path.length>findMeFile.name!!.length){
-                    path = path.substring(0, path.length-findMeFile.name!!.length-2)
-                    dir.path = path
-                    findMeFile.delete()
+            fun fromDocumentFile(file: DocumentFile, mContext: Context): Directory?{
+                try {
+                    val dir = Directory("", file.name!!, true, null)
                     dir.commit(mContext)
+                    val findMeFile = file.createFile("", "fmassstorageFindMePls.${dir.dirId}")
+                    val process = Runtime.getRuntime().exec(arrayOf("su","-c","find","-L","/storage/","-name",findMeFile!!.name))
+                    process.waitFor()
+                    var path = String(process.inputStream.readBytes())
+                    if(path.length>findMeFile.name!!.length){
+                        path = path.substring(0, path.length-findMeFile.name!!.length-2)
+                        dir.path = path
+                        findMeFile.delete()
+                        dir.commit(mContext)
+                        return dir
+                    }
+                    else {
+                        dir.remove(mContext)
+                        findMeFile.delete()
+                        Toast.makeText(mContext, R.string.cannot_find_directory_path_add_it_manualy, Toast.LENGTH_LONG).show()
+                    }
+                } catch (e: IOException){
+                    Toast.makeText(mContext, R.string.you_need_install_busybox, Toast.LENGTH_SHORT).show()
                 }
-                else {
-                    dir.remove(mContext)
-                    findMeFile.delete()
-                    Toast.makeText(mContext, R.string.cannot_find_directory_path_add_it_manualy, Toast.LENGTH_LONG).show()
-                }
-                return dir
+                return null
+
             }
             fun checkDirectory(path: String): Boolean{
                 val process = Runtime.getRuntime().exec(arrayOf("su","-c","ls", path))
@@ -303,9 +309,13 @@ class Utils {
         const val isRootedPrefs = "IsRooted"
         private var previousUsbState = ""
         fun checkForRoot(): Boolean {
-            val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "ls"))
-            process.waitFor()
-            return process.exitValue() == 0
+            return try{
+                val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "ls"))
+                process.waitFor()
+                process.exitValue() == 0
+            } catch(e: IOException){
+                false
+            }
         }
         fun selectImage(): Intent{
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -321,35 +331,47 @@ class Utils {
             }
             return image
         }
-        fun findLunFile(): String?{
-            var process = Runtime.getRuntime().exec(arrayOf("su", "-c", "mount", "|grep", "configfs"))
-            process.waitFor()
-            val fileNames = String(process.inputStream.readBytes()).split(" ")
-            return if(fileNames.size > 3){
-                process = Runtime.getRuntime().exec(arrayOf("su", "-c", "find", fileNames[2], "-type", "f", "-name", "file"))
+        fun findLunFile(mContext: Context): String?{
+            try{
+                var process = Runtime.getRuntime().exec(arrayOf("su", "-c", "mount", "|grep", "configfs"))
                 process.waitFor()
-                val path = String(process.inputStream.readBytes())
-                if(path.length > 4)
-                    path
-                else null
-            } else{
-                process = Runtime.getRuntime().exec(arrayOf("find", "/sys", "-type", "d", "-name", "'f_mass_storage'"))
-                process.waitFor()
-                val path = String(process.inputStream.readBytes()) + "/lun/file"
-                if (path.length > 4)
-                    path
-                else null
+                val fileNames = String(process.inputStream.readBytes()).split(" ")
+                return if(fileNames.size > 3){
+                    process = Runtime.getRuntime().exec(arrayOf("su", "-c", "find", fileNames[2], "-type", "f", "-name", "file"))
+                    process.waitFor()
+                    val path = String(process.inputStream.readBytes())
+                    if(path.length > 4)
+                        path
+                    else null
+                } else{
+                    process = Runtime.getRuntime().exec(arrayOf("find", "/sys", "-type", "d", "-name", "'f_mass_storage'"))
+                    process.waitFor()
+                    val path = String(process.inputStream.readBytes()) + "/lun/file"
+                    if (path.length > 4)
+                        path
+                    else null
+                }
+            } catch (e: IOException){
+                Toast.makeText(mContext, R.string.you_need_install_busybox, Toast.LENGTH_SHORT).show()
             }
+            return null
         }
-        fun eject(){
-            Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", "\"\"", ">", findLunFile())).waitFor()
-            if(previousUsbState.isNotEmpty()){
-                Runtime.getRuntime().exec(arrayOf("su", "-c", "setprop", "sys.usb.config", previousUsbState)).waitFor()
-            }
-            else{
-                val process = Runtime.getRuntime().exec(arrayOf("su", "-c", "getprop", "sys.usb.config"))
-                process.waitFor()
-                previousUsbState = String(process.inputStream.readBytes())
+        fun eject(mContext: Context){
+            try {
+                Runtime.getRuntime().exec(arrayOf("su", "-c", "echo", "\"\"", ">", findLunFile(mContext)))
+                    .waitFor()
+                if (previousUsbState.isNotEmpty()) {
+                    Runtime.getRuntime()
+                        .exec(arrayOf("su", "-c", "setprop", "sys.usb.config", previousUsbState))
+                        .waitFor()
+                } else {
+                    val process =
+                        Runtime.getRuntime().exec(arrayOf("su", "-c", "getprop", "sys.usb.config"))
+                    process.waitFor()
+                    previousUsbState = String(process.inputStream.readBytes())
+                }
+            } catch (e: IOException){
+                Toast.makeText(mContext, R.string.you_need_install_busybox, Toast.LENGTH_SHORT).show()
             }
         }
     }

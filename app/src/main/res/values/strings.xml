@@ -40,4 +40,5 @@
     <string name="hoast_as_cd_drive">Host as CD drive</string>
     <string name="read_only">Read only</string>
     <string name="fail_device_in_use">Failed, device is in use</string>
+    <string name="you_need_install_busybox">You need to install busybox</string>
 </resources>

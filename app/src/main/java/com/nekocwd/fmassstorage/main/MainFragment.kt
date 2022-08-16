@@ -22,7 +22,7 @@ class MainFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private val imageListAdapter = Utils.ImageListAdapter({ img->
-        val lun = Utils.findLunFile()
+        val lun = Utils.findLunFile(requireContext())
         if(lun == null){
             Toast.makeText(requireContext(), R.string.cannot_find_lun_file, Toast.LENGTH_SHORT).show()
         }
@@ -95,7 +95,7 @@ class MainFragment : Fragment() {
             findNavController().navigate(R.id.action_main2createnew)
         }
         binding.eject.setOnClickListener {
-            Utils.eject()
+            Utils.eject(requireContext())
             binding.statusContainer.visibility = View.GONE
         }
         Utils.Image.findNowHosting(requireContext())?.let {

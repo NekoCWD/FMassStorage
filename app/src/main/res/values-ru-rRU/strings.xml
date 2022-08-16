@@ -38,4 +38,5 @@
     <string name="fail_device_in_use">Ошибка, устройство используется</string>
     <string name="edit_image">Редактировать образ</string>
     <string name="save">Сохранить</string>
+    <string name="you_need_install_busybox">Вам нужно установить Busybox</string>
 </resources>
