@@ -1,0 +1,1 @@
+ - Remove crash if "su" wasn't found
