@@ -41,4 +41,6 @@
     <string name="read_only">Read only</string>
     <string name="fail_device_in_use">Failed, device is in use</string>
     <string name="you_need_install_busybox">You need to install busybox</string>
+    <string name="no_files_to_host">There are no files to host.\nAdd another directory or download some images</string>
+    <string name="no_directories">There are no directories, add them</string>
 </resources>

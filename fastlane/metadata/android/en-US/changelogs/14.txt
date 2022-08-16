@@ -1,0 +1,4 @@
+ - Added animation on image selected
+ - Added label when directory empty
+ - Added label when directory not configured
+ - Disable settings in menu when settings is oppened

@@ -27,7 +27,15 @@
         <action
             android:id="@+id/action_Main2Setting"
             app:destination="@id/SettingFragment" />
+        <action
+            android:id="@+id/action_MainFragment_to_DirSettingsFragment"
+            app:destination="@id/DirSettingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/DirSettingsFragment"
+        android:name="com.nekocwd.fmassstorage.settings.DirectorySettingFragment"
+        android:label="@string/configure_image_directories"
+        tools:layout="@layout/fragment_directory_setting"/>
     <fragment
         android:id="@+id/CreateNewImageFragment"
         android:name="com.nekocwd.fmassstorage.main.EditFragment"

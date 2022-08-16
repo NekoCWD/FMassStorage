@@ -34,6 +34,7 @@ class DirectorySettingFragment : Fragment() {
             adapter.dataset.clear()
             adapter.dataset.addAll(Utils.Directory.getAll(requireContext()))
             adapter.notifyDataSetChanged()
+            binding.noDirectories.visibility = if(adapter.dataset.isEmpty()) View.VISIBLE else View.GONE
         }
     }
 
@@ -47,6 +48,7 @@ class DirectorySettingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter.dataset.addAll(Utils.Directory.getAll(requireContext()))
+        binding.noDirectories.visibility = if(adapter.dataset.isEmpty()) View.VISIBLE else View.GONE
         binding.recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
 
@@ -84,6 +86,7 @@ class DirectorySettingFragment : Fragment() {
                 adapter.dataset.add(it)
                 it.commit(requireContext())
                 adapter.notifyDataSetChanged()
+                binding.noDirectories.visibility = if(adapter.dataset.isEmpty()) View.VISIBLE else View.GONE
             }
             alertDialog.show(childFragmentManager, "a")
         }

@@ -11,6 +11,8 @@ import android.view.Menu
 import android.view.MenuItem
 import com.nekocwd.fmassstorage.R
 import com.nekocwd.fmassstorage.databinding.ActivityMainBinding
+import com.nekocwd.fmassstorage.settings.DirectorySettingFragment
+import com.nekocwd.fmassstorage.settings.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +37,14 @@ class MainActivity : AppCompatActivity() {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)
+        var isSettingsEnabled = navHostFragment?.childFragmentManager?.fragments?.get(0) !is SettingsFragment
+        isSettingsEnabled = isSettingsEnabled && navHostFragment?.childFragmentManager?.fragments?.get(0) !is DirectorySettingFragment
+        menu?.getItem(0)?.isEnabled = isSettingsEnabled
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

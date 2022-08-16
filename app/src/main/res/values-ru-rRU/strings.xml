@@ -39,4 +39,6 @@
     <string name="edit_image">Редактировать образ</string>
     <string name="save">Сохранить</string>
     <string name="you_need_install_busybox">Вам нужно установить Busybox</string>
+    <string name="no_files_to_host">Нет файлов для размещения.\nДобавьте другую папку или загрузите их в существующую</string>
+    <string name="no_directories">Папки не настроены, добавьте их</string>
 </resources>

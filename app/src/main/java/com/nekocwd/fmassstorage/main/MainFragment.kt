@@ -32,6 +32,8 @@ class MainFragment : Fragment() {
                 binding.imageLabel.text = img.label
                 binding.imagePath.text = "${img.directory.label}/${img.path}"
                 binding.statusContainer.visibility = View.VISIBLE
+                val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.fabs_open_anim)
+                binding.statusContainer.startAnimation(anim)
             } else {
                 Toast.makeText(requireContext(), R.string.fail_device_in_use, Toast.LENGTH_SHORT).show()
             }
@@ -57,12 +59,20 @@ class MainFragment : Fragment() {
 
         binding.imageList.adapter = imageListAdapter
         val directories = Utils.Directory.getAll(requireContext())
+        if(directories.isEmpty()){
+            findNavController().navigate(R.id.action_MainFragment_to_DirSettingsFragment)
+        }
         imageListAdapter.dataset.clear()
-        for(directory in directories){
-            val images = Utils.Image.getAllFromDirectory(directory, requireContext())
-            imageListAdapter.dataset.addAll(images)
+        for(directory in directories) {
+            if (directory.isEnabled) {
+                val images = Utils.Image.getAllFromDirectory(directory, requireContext())
+                imageListAdapter.dataset.addAll(images)
+            }
         }
         imageListAdapter.notifyDataSetChanged()
+        if(imageListAdapter.dataset.isEmpty()){
+            binding.emptyDir.visibility = View.VISIBLE
+        }
 
         binding.addFab.setOnClickListener {
             val isOpened = binding.createNewFab.visibility == View.VISIBLE
@@ -96,10 +106,14 @@ class MainFragment : Fragment() {
         }
         binding.eject.setOnClickListener {
             Utils.eject(requireContext())
+            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.fabs_close_anim)
+            binding.statusContainer.startAnimation(anim)
             binding.statusContainer.visibility = View.GONE
         }
         Utils.Image.findNowHosting(requireContext())?.let {
+            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.fabs_open_anim)
             binding.statusContainer.visibility = View.VISIBLE
+            binding.statusContainer.startAnimation(anim)
             binding.imageView.setImageDrawable(it.image)
             binding.imageLabel.text = it.label
             binding.imagePath.text = "${it.directory.label}/${it.path}"
